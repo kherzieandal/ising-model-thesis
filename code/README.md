@@ -8,7 +8,29 @@
 -   matplotlib (optional, for plotting only)
 -   mpi4py (for multiple GPUs)
 
+Additional info:
+
+-   You might get an `OSerror` for CUDA IPC on windows, so I would recommend to use either WSL or Linux.
+
 ### Basic Usage
+
+Python
+
+```
+
+```
+
+Numba-compiled
+
+```
+
+```
+
+Parallel-CPU
+
+```
+
+```
 
 Single GPU:
 
