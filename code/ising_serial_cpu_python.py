@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import argparse
+import time
 
 # Set constants
 TCRIT = 2.26918531421 # critical temperature
@@ -12,11 +13,17 @@ parser.add_argument("--lattice-m", '-y', type=int, default=40*128, help="number 
 parser.add_argument("--nwarmup", '-w', type=int, default=100, help="number of warmup iterations")
 parser.add_argument("--niters", '-n', type=int, default=1000, help="number of trial iterations")
 parser.add_argument("--alpha", '-a', type=float, default=0.1, help="coefficient of critical temperature")
+parser.add_argument("--interaction-constant", '-J', type=float, default=1, help="interaction constant")
+parser.add_argument("--external-magnetic-field", '-B', type=float, default=0, help="external magnetic field")
 parser.add_argument("--seed", '-s', type=int, default=1234, help="seed for random number generation")
 parser.add_argument("--write-lattice", '-o', action='store_true', help="write final lattice configuration to file/s")
 parser.add_argument("--use-common-seed", '-c', action='store_true', help="Use common seed for all ranks + updating offset. " +
                                                                          "Yields consistent results independent of number " +
                                                                          "of GPUs but is slower.")
+
+# Set constants
+TCRIT = 2.26918531421 # critical temperature
+
 args = parser.parse_args()
 
 def initial_state(N, M):
@@ -202,3 +209,34 @@ E = n1*E1 # Internal Energy
 M = n1*M1 # Magnetization
 C = (n1*E2 - n2*E1*E1)*inv_temp_sq # Specific Heat
 X = (n1*M2 - n2*M1*M1)*inv_temp # Magnetic Susceptibility
+
+inv_temp = (1.0) / (args.alpha * TCRIT)
+
+lattice = initial_state(lattice_n, lattice_m)
+
+print("Starting warmup...")
+for i in range(args.nwarmup):
+    mc_move(lattice, inv_temp, args.interaction_constant, args.external_magnetic_field)
+
+print("Starting trial iterations...")
+t0 = time.time()
+for i in range(args.niters):
+    mc_move(lattice, inv_temp, args.interaction_constant, args.external_magnetic_field)
+    if ( i % 1000 == 0):
+        print("Completed {}/{} iterations...".format(i+1, args.niters))
+
+t1 = time.time()
+t = t1 - t0
+
+# Compute average magnetism
+m_global = calc_mag(lattice)
+
+print("REPORT:")
+print("\ttemperature: {} * {}".format(args.alpha, TCRIT))
+print("\tseed: {}".format(args.seed))
+print("\twarmup iterations: {}".format(args.nwarmup))
+print("\ttrial iterations: {}".format(args.niters))
+print("\tlattice dimensions: {} x {}".format(args.lattice_n, args.lattice_m))
+print("\telapsed time: {} sec".format(t))
+print("\tupdates per ns: {}".format((args.lattice_n * args.lattice_m * args.niters) / t * 1e-9))
+print("\taverage magnetism (absolute): {}".format(np.abs(m_global)))

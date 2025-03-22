@@ -1,6 +1,8 @@
 ### Basic Implementation using Python
 
-### Required packages:
+### Required External packages:
+
+You may check the documentation on how to install the following poackages in their own documentation website.
 
 -   numpy
 -   numba
@@ -17,7 +19,7 @@ Additional info:
 Python
 
 ```
-
+python ising_serial_cpu_python.py -x <rows> -y <columns> -n <number of iterations>
 ```
 
 Numba-compiled
