@@ -17,6 +17,7 @@ The checkerboard Metropolis algorithm is executed utilizing numerous CPU and mob
 ```
 ├── code/                     # Code used for analysis/simulations
 ├── results/                  # Figures, tables, or supplementary materials
+├── misc/                     # Miscellaneous files
 ├── README.md                 # This readme file
 └── LICENSE                   # License information
 ```
