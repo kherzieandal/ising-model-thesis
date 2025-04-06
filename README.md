@@ -28,7 +28,7 @@ The checkerboard Metropolis algorithm is executed utilizing numerous CPU and mob
 
 ```
 @mastersthesis{andal2023parallel,
-    author = {Kherzie Andrei Andal and Rhenish Simon},
+    author = {Kherzie Andrei Andal and Rogelio Dizon and Rhenish Simon},
     title = {Parallel Monte Carlo Simulation of the 2D Ising Model using GPU and CPU},
     city = {Manila},
     institution = {Polytechnic University of the Philippines},
